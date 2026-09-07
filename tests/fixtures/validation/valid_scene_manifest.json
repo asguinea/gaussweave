@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "fixture-dataset",
+  "scene_id": "syn-fixture",
+  "source_type": "synthetic",
+  "family": "facade",
+  "subsets": ["smoke"],
+  "provenance": {
+    "created_at": "2026-01-01T00:00:00Z",
+    "source_description": "Minimal deterministic validation fixture",
+    "generator": {
+      "name": "fixture-generator",
+      "version": "1",
+      "blender_version": "fixture",
+      "config_path": "configs/scenes/fixture.json"
+    }
+  },
+  "master_seed": 0,
+  "coordinate_system": {
+    "handedness": "right",
+    "up_axis": "+Z",
+    "world_units": "meters",
+    "camera_convention": "blender_x_right_y_up_minus_z_forward",
+    "transform_storage": "row_major"
+  },
+  "image_spec": {
+    "width": 1,
+    "height": 1,
+    "rgb_format": "png",
+    "rgb_color_space": "srgb",
+    "depth_format": "exr",
+    "depth_semantics": "metric_distance_along_camera_ray",
+    "background": {"type": "solid", "depth_valid": false}
+  },
+  "cameras": {
+    "records": [{
+      "camera_id": "cam-train-0000",
+      "width": 1,
+      "height": 1,
+      "model": "pinhole",
+      "fx": 1,
+      "fy": 1,
+      "cx": 0,
+      "cy": 0,
+      "world_from_camera": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+      "near": 0.1,
+      "far": 10,
+      "rgb_path": "rgb/cam-train-0000.png"
+    }]
+  },
+  "splits": {
+    "train": ["cam-train-0000"],
+    "validation": ["cam-train-0000"],
+    "test": ["cam-train-0000"]
+  },
+  "procedural_parameters": {},
+  "assets": [{
+    "asset_id": "rgb-0",
+    "kind": "rgb_directory",
+    "path": "rgb",
+    "required": true,
+    "generated": true
+  }],
+  "structure": {
+    "annotation_type": "ground_truth",
+    "grammar_path": "structure/grammar.json",
+    "terminals_path": "structure/terminals.json",
+    "instances_path": "structure/instances.json",
+    "repeat_groups": [],
+    "annotation_provenance": {"method": "generator_ground_truth"}
+  },
+  "edits": [],
+  "checksums": {"algorithm": "sha256", "manifest_path": "checksums.json"},
+  "limitations": []
+}

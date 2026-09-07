@@ -1,0 +1,1 @@
+"""Shared structural representation interfaces."""

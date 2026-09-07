@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+*.blend binary
+*.ckpt binary
+*.jpeg binary
+*.jpg binary
+*.npy binary
+*.npz binary
+*.pdf binary
+*.ply binary
+*.png binary
+*.pt binary
+*.pth binary

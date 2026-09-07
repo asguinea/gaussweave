@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0.0",
+  "definitions_version": "definitions-v1.0",
+  "experiment_id": "exp-smoke-v1",
+  "description": "Unfrozen qualification tiny full-GS qualification pipeline.",
+  "family": "gs_baseline",
+  "mode": "development",
+  "research_questions": [
+    "RQ3",
+    "RQ7"
+  ],
+  "candidate_claims": [
+    "C6"
+  ],
+  "dataset": {
+    "dataset_id": "tiny-project-fixture",
+    "scene_selection": {
+      "scene_ids": [
+        "syn-tiny"
+      ]
+    },
+    "train_split": "train",
+    "validation_split": "validation",
+    "test_split": "test",
+    "manifest_path": null
+  },
+  "execution": {
+    "resource_profile": "smoke",
+    "seeds": [
+      17
+    ],
+    "attempt": 1,
+    "environment_requirements": {
+      "wsl_required": true,
+      "cuda_required": true,
+      "gpu_required": true,
+      "minimum_vram_bytes": 4294967296
+    }
+  },
+  "method": {
+    "method_id": "tiny-gs-qualification",
+    "method_kind": "full_gs",
+    "version": "1",
+    "operating_point": {
+      "operating_point_id": "tiny-smoke",
+      "initial_gaussian_count": 3,
+      "maximum_gaussian_count": 3,
+      "train_camera_ids": [
+        "train-center",
+        "train-left"
+      ],
+      "validation_camera_ids": [
+        "validation-right"
+      ],
+      "test_camera_ids": [
+        "test-up"
+      ]
+    },
+    "privileged_information": [
+      "none"
+    ]
+  },
+  "baseline": null,
+  "training": {
+    "enabled": true,
+    "config_ref": null,
+    "checkpoint_selection": {
+      "policy": "final_iteration",
+      "metric": null,
+      "direction": null,
+      "iteration": null
+    },
+    "test_data_forbidden": true
+  },
+  "representation": {
+    "grammar_source": "none",
+    "canonical_selection": "none",
+    "membership_policy": "none",
+    "clipping_policy": "none",
+    "appearance_policy": "unchanged",
+    "residual_policy": "none",
+    "instancing_implementation": "none"
+  },
+  "rendering": {
+    "width": 64,
+    "height": 64,
+    "camera_batch_size": 4,
+    "outputs": [
+      "rgb",
+      "alpha",
+      "depth"
+    ],
+    "warmup_frames": 0,
+    "measured_repetitions": 1
+  },
+  "metrics": {
+    "metric_ids": [
+      "psnr_rgb",
+      "mse_rgb",
+      "maximum_absolute_error_rgb"
+    ],
+    "aggregation_unit": "scene",
+    "qualitative_selection_policy": "fixed_camera_ids"
+  },
+  "accounting": {
+    "storage_required": false,
+    "gpu_memory_required": true,
+    "cpu_memory_required": true,
+    "runtime_required": true,
+    "include_temporary_workspace": false
+  },
+  "stopping": {
+    "rules": [
+      {
+        "kind": "iteration_count",
+        "value": 30
+      },
+      {
+        "kind": "gaussian_cap",
+        "value": 3
+      },
+      {
+        "kind": "memory_guard",
+        "value": "smoke"
+      }
+    ]
+  },
+  "failure_policy": {
+    "preserve_failed_runs": true,
+    "silent_parameter_change_forbidden": true,
+    "retry_policy": "new_attempt_same_config",
+    "allowed_exclusion_reasons": []
+  },
+  "outputs": {
+    "run_root": "runs/smoke",
+    "save_resolved_config": true,
+    "save_logs": true,
+    "save_renders": true,
+    "save_metrics": true,
+    "save_accounting": true,
+    "save_failures": true
+  },
+  "freeze": {
+    "status": "unfrozen",
+    "frozen_at": null,
+    "code_commit": null,
+    "environment_lock_digest": null,
+    "scene_list_digest": null,
+    "configuration_digest": null
+  },
+  "matrix": {},
+  "notes": "Qualification-only miniature workload; no compactness or frozen-result claim."
+}

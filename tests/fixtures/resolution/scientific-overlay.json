@@ -1,0 +1,11 @@
+{
+  "method": {
+    "operating_point": {
+      "gaussian_cap": 128
+    }
+  },
+  "rendering": {
+    "width": 2,
+    "height": 2
+  }
+}

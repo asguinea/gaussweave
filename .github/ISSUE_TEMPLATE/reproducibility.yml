@@ -1,0 +1,37 @@
+name: Reproducibility report
+description: Report a mismatch in a documented GaussWeave workflow.
+title: "[Reproducibility]: "
+labels: [reproducibility]
+body:
+  - type: input
+    id: commit
+    attributes:
+      label: Commit or release
+      placeholder: Full Git commit SHA or version
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Exact command
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment record
+      description: Paste a redacted environment capture or describe all deviations from the reference environment.
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed and expected result
+    validations:
+      required: true
+  - type: textarea
+    id: artifacts
+    attributes:
+      label: Digests and logs
+      description: Include relevant SHA-256 digests and redacted logs; do not upload restricted data.

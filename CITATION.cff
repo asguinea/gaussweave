@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use GaussWeave, please cite this software."
+title: "GaussWeave"
+type: software
+authors:
+  - family-names: "Sanchez Guinea"
+    given-names: "Alejandro"
+repository-code: "https://github.com/asguinea/gaussweave"
+url: "https://github.com/asguinea/gaussweave"
+license: "Apache-2.0"
+version: "0.1.0"
+date-released: "2026-09-07"

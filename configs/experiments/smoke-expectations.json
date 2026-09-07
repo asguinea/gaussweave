@@ -1,0 +1,28 @@
+{
+  "expectation_version": "1.0",
+  "classification": "qualification-only",
+  "experiment_id": "exp-smoke-v1",
+  "scene_id": "syn-tiny",
+  "seed": 17,
+  "run_id_scientific_prefix_required": true,
+  "final_gaussian_count": 3,
+  "training_loss": {
+    "finite": true,
+    "must_decrease": true
+  },
+  "scene_psnr_db": {
+    "minimum": 18.5,
+    "maximum": 20.5
+  },
+  "checkpoint_scientific_digest": "sha256:aec8f8f02a89766c56cec97d182c02f32d22986723de91f2f07cfa6f348ae9da",
+  "result_schema_status": "valid",
+  "resource_compliance_prefix": "compliant",
+  "strict_inventory_required": true,
+  "freeze_status": "unfrozen",
+  "accounting_status": "not_measured",
+  "timing_exactness_required": false,
+  "limitations": [
+    "tiny deterministic qualification qualification fixture",
+    "PSNR range is a reproduction guard, not a broad scientific benchmark"
+  ]
+}

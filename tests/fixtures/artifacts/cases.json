@@ -1,0 +1,5 @@
+{
+  "missing_file": "missing.txt",
+  "unsafe_archive_members": ["../escape", "/absolute", "C:/drive", "a\\..\\escape"],
+  "unsafe_paths": ["../escape", "/absolute", "C:/drive", "a\\..\\escape"]
+}

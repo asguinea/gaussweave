@@ -1,0 +1,116 @@
+{
+  "config_schema_version": "1.0.0",
+  "definitions_version": "definitions-v1.0",
+  "dataset_id": "gaussweave-synthetic-v1",
+  "scene_id": "syn-colonnade-linear-development-s303",
+  "source_type": "synthetic",
+  "family": "colonnade",
+  "subsets": ["development", "smoke"],
+  "master_seed": 303,
+  "seed_policy": {"version": "sha256-v1", "overrides": {}, "streams": ["geometry", "materials", "lighting", "cameras", "occluders", "edits", "annotations"]},
+  "derived_seeds": {"geometry": 1973882094, "materials": 3887823499, "lighting": 3726693505, "cameras": 3172229621, "occluders": 860832560, "edits": 2780086284, "annotations": 4016965558},
+  "coordinate_system": {"handedness": "right", "up_axis": "+Z", "unit": "meters", "camera_axes": {"right": "+X", "up": "+Y", "forward": "-Z"}, "matrix_layout": "row_major"},
+  "generator": {"name": "gaussweave-procedural", "version": "scene-config-v1", "implementation_status": "configuration_only", "external_assets": []},
+  "render": {
+    "engine": "eevee_next", "compute_device": "gpu", "width": 256, "height": 256,
+    "resolution_percentage": 100, "samples": 32, "denoise": false,
+    "color_space": "Linear", "view_transform": "Standard", "look": "",
+    "exposure": 0.0, "gamma": 1.0,
+    "background": {"kind": "environment", "rgba": [0.2, 0.24, 0.28, 1.0], "has_valid_depth": false}
+  },
+  "camera": {
+    "trajectory": "colonnade_arc",
+    "split_counts": {"train": 12, "validation": 4, "test": 4},
+    "image_width": 256, "image_height": 256,
+    "focal_mode": "focal_length_mm", "focal_length_mm": 40.0,
+    "horizontal_fov_degrees": null, "principal_point": "centered",
+    "principal_point_px": null, "near_m": 0.1, "far_m": 45.0,
+    "position_bounds_m": {"min": [-10.0, -12.0, 1.0], "max": [20.0, 12.0, 4.5]},
+    "orientation_bounds_degrees": {"yaw": [-60.0, 60.0], "pitch": [-12.0, 12.0], "roll": [0.0, 0.0]},
+    "minimum_separation_m": 0.4, "minimum_angular_separation_degrees": 4.0,
+    "minimum_structure_coverage": 0.65, "seed": 3172229621,
+    "family_intent": {"radius_m": [8.0, 16.0], "azimuth_degrees": [-60.0, 60.0], "height_m": [1.0, 4.5]}
+  },
+  "structure": {
+    "repetition_level": "moderate", "spacing_regime": "wide",
+    "terminal_complexity": "compound", "regularity": "strict",
+    "missing_instance_policy": "explicit", "negative_control": false,
+    "negative_control_label": null, "expected_repeat_groups": ["colonnade-row"],
+    "expected_canonical_terminal_categories": ["column-terminal"]
+  },
+  "family_parameters": {
+    "family": "colonnade", "count": 7, "spacing_m": 2.8,
+    "terminal_radius_m": 0.45, "terminal_width_m": null,
+    "terminal_height_m": 4.2, "plinth_height_m": 0.35,
+    "capital_height_m": 0.45, "span_mode": "arch", "row_count": 1,
+    "layout": "linear", "floor_width_m": 6.0, "floor_length_m": 20.0,
+    "floor_thickness_m": 0.25, "background_mode": "open",
+    "missing_pattern": "single_gap", "missing_instances": [3]
+  },
+  "appearance": {
+    "regime": "grouped",
+    "base_material": "stone", "base_color": [0.78, 0.72, 0.62, 1.0],
+    "roughness": 0.62, "metallic": null,
+    "palette": [[0.78, 0.72, 0.62, 1.0], [0.58, 0.62, 0.68, 1.0]],
+    "roughness_range": [0.5, 0.75], "metallic_range": [0.0, 0.02],
+    "variation_amplitude": 0.04, "variation_groups": ["colonnade-row"],
+    "group_size": 2, "alternate_period": null, "texture_mode": "procedural",
+    "seed": 3887823499, "exact_canonical_reuse": true,
+    "residual_policy_label": "grouped-stone-residual"
+  },
+  "lighting": {
+    "regime": "directional", "energy_range": [1.2, 3.0],
+    "world_energy": 0.6, "world_color": [0.7, 0.8, 1.0],
+    "key_light_type": "sun", "key_energy": 2.0,
+    "key_color": [1.0, 0.95, 0.85], "key_position_m": [0.0, 0.0, 10.0],
+    "color_temperature_kelvin": [4800.0, 6200.0],
+    "direction_degrees": [35.0, -40.0, 15.0], "deterministic_variation": false,
+    "source_count": 1, "fill_light_count": 0, "fill_light_energy": 0.0,
+    "spatial_variation_amplitude": 0.0, "seed": 3726693505,
+    "cast_shadows": true, "exposure_intent": "exterior-daylight"
+  },
+  "occlusion": {
+    "regime": "clear", "occluder_categories": [],
+    "target_fraction": [0.0, 0.0], "qualitative_level": "none",
+    "occluder_count": 0, "foreground_distance_m": [0.0, 0.0],
+    "placement_bounds_m": {"min": [0.0, 0.0, 0.0], "max": [0.0, 0.0, 0.0]},
+    "may_overlap_repeated_elements": false, "allow_camera_truncation": false,
+    "seed": 860832560, "minimum_visible_fraction": 0.9
+  },
+  "annotations": {
+    "emit_ground_truth_grammar": true, "grammar_source_kind": "ground_truth",
+    "emit_instance_masks": true, "emit_semantic_masks": true,
+    "emit_terminal_annotations": true, "emit_repeat_group_annotations": true,
+    "emit_visibility": true, "grammar_path": "annotations/grammar.json",
+    "instance_table_path": "annotations/instances.json",
+    "visibility_path": "annotations/visibility.json"
+  },
+  "outputs": {
+    "output_root": "datasets/generated/colonnade-development-s303",
+    "rgb": true, "rgb_format": "png", "rgb_bit_depth": 8,
+    "depth": true, "depth_format": "npy", "depth_unit": "meters",
+    "depth_semantics": "metric_ray_distance", "normals": true,
+    "normals_format": "npy", "normals_coordinate_system": "world",
+    "masks": true, "mask_format": "png", "mask_bit_depth": 16,
+    "semantic_masks": true, "terminal_masks": true, "instance_masks": true,
+    "alpha": false, "object_ids": true, "material_ids": false,
+    "geometry_format": "glb", "generate_preview": true,
+    "write_scene_file": true, "write_checksums": true
+  },
+  "edits": [{
+    "edit_id": "edit-colonnade-remove", "operation": "remove_instances",
+    "target_role": "colonnade-row", "parameters": {"indices": [1, 5]},
+    "applicability": "required", "camera_reuse": "reuse_all",
+    "changed_region_path": "edits/edit-colonnade-remove/changed-mask.png",
+    "unchanged_region_path": "edits/edit-colonnade-remove/unchanged-mask.png",
+    "edit_seed": 2780086284
+  }],
+  "expected_resource_profile": "smoke",
+  "extended_mode": false,
+  "notes": "Configuration intent only; no geometry is generated by scene configuration.",
+  "provenance": {
+    "source_config": "configs/scenes/colonnade-development-s303.json",
+    "definitions": ["definitions/05_data_and_scene_specification.md", "definitions/06_grammar_model.md"],
+    "authoring_tool": "gaussweave-scene-config-v1", "created_at": null
+  }
+}

@@ -1,0 +1,28 @@
+name: Feature request
+description: Propose a focused enhancement to GaussWeave.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Motivation
+      description: Which reproducibility or engineering need is unmet?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the interface and expected result.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: reproducibility
+    attributes:
+      label: Reproducibility impact
+      description: Note effects on schemas, deterministic behavior, dependencies, data, or hardware.

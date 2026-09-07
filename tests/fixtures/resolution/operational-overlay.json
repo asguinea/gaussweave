@@ -1,0 +1,15 @@
+{
+  "description": "Operational overlay",
+  "execution": {
+    "attempt": 2
+  },
+  "outputs": {
+    "run_root": "runs/alternate",
+    "save_logs": false
+  },
+  "notes": "Excluded descriptive text",
+  "freeze": {
+    "frozen_at": null,
+    "configuration_digest": null
+  }
+}

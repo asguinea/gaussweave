@@ -1,0 +1,141 @@
+{
+  "cpu": {
+    "architecture": "x86_64",
+    "logical_count": 16,
+    "model": "x86_64"
+  },
+  "disk": {
+    "below_safety_reserve": false,
+    "error": null,
+    "free_bytes": 1007687032832,
+    "mount_source": "/dev/sde",
+    "safety_reserve_bytes": 107374182400,
+    "total_bytes": 1081101176832,
+    "used_bytes": 18421788672
+  },
+  "errors": [],
+  "gpu": {
+    "command_available": true,
+    "devices": [
+      {
+        "driver_version": "591.84",
+        "free_vram_bytes": 8274313216,
+        "index": 0,
+        "name": "NVIDIA GeForce RTX 5070 Laptop GPU",
+        "query_timestamp": "2026/07/27 11:06:01.371",
+        "total_vram_bytes": 8546942976
+      }
+    ],
+    "driver_version": "591.84",
+    "error": null,
+    "executable": "/usr/lib/wsl/lib/nvidia-smi",
+    "query_exit_code": 0,
+    "stderr": ""
+  },
+  "memory": {
+    "available_bytes": 13974839296,
+    "error": null,
+    "swap_total_bytes": 4294967296,
+    "swap_used_bytes": 1323008,
+    "total_bytes": 16376852480
+  },
+  "platform": {
+    "kernel": "#1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025",
+    "linux_distribution": "Ubuntu",
+    "linux_distribution_version": "24.04",
+    "locale": "C",
+    "machine": "x86_64",
+    "python_executable": "/usr/bin/python3.12",
+    "python_version": "3.12.3",
+    "release": "6.6.87.2-microsoft-standard-WSL2",
+    "system": "Linux",
+    "timezone": "CEST",
+    "windows_host": null
+  },
+  "repository": {
+    "filesystem_class": "wsl_linux",
+    "path": "~/projects/gaussweave",
+    "resolved_by": "git",
+    "warning": null
+  },
+  "schema_version": "1.0",
+  "timestamp": "2026-07-27T09:06:01.479703+00:00",
+  "tools": [
+    {
+      "available": true,
+      "error": null,
+      "executable": "/usr/bin/git",
+      "exit_code": 0,
+      "name": "git",
+      "version_text": "git version 2.43.0"
+    },
+    {
+      "available": true,
+      "error": null,
+      "executable": "/usr/bin/x86_64-linux-gnu-gcc-13",
+      "exit_code": 0,
+      "name": "gcc",
+      "version_text": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+    },
+    {
+      "available": true,
+      "error": null,
+      "executable": "/usr/bin/x86_64-linux-gnu-g++-13",
+      "exit_code": 0,
+      "name": "g++",
+      "version_text": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+    },
+    {
+      "available": true,
+      "error": null,
+      "executable": "/usr/bin/cmake",
+      "exit_code": 0,
+      "name": "cmake",
+      "version_text": "cmake version 3.28.3\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake)."
+    },
+    {
+      "available": true,
+      "error": null,
+      "executable": "/usr/bin/ninja",
+      "exit_code": 0,
+      "name": "ninja",
+      "version_text": "1.11.1"
+    },
+    {
+      "available": false,
+      "error": "executable not found",
+      "executable": null,
+      "exit_code": null,
+      "name": "blender",
+      "version_text": null
+    },
+    {
+      "available": false,
+      "error": "executable not found",
+      "executable": null,
+      "exit_code": null,
+      "name": "colmap",
+      "version_text": null
+    },
+    {
+      "available": true,
+      "error": null,
+      "executable": "/usr/lib/wsl/lib/nvidia-smi",
+      "exit_code": 0,
+      "name": "nvidia-smi",
+      "version_text": "NVIDIA-SMI version  : 590.56\nNVML version        : 590.56\nDRIVER version      : 591.84\nCUDA Version        : 13.1"
+    }
+  ],
+  "warnings": [],
+  "wsl": {
+    "detected": true,
+    "distribution": "Ubuntu 24.04 on WSL 2",
+    "evidence": [
+      "kernel",
+      "WSL_DISTRO_NAME",
+      "WSL_INTEROP"
+    ],
+    "generation": "2",
+    "version_text": null
+  }
+}

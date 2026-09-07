@@ -1,0 +1,65 @@
+{
+  "base": "configs/scenes/facade-development-s101.json",
+  "cases": [
+    {
+      "id": "wrong-family-payload",
+      "path": ["family_parameters", "family"],
+      "value": "corridor",
+      "expected": "does not match top-level family"
+    },
+    {
+      "id": "impossible-geometry",
+      "path": ["family_parameters", "wall_width_m"],
+      "value": 2.0,
+      "expected": "do not fit within the wall"
+    },
+    {
+      "id": "empty-camera-split",
+      "path": ["camera", "split_counts", "test"],
+      "value": 0,
+      "expected": "must be at least 1"
+    },
+    {
+      "id": "unsupported-output-format",
+      "path": ["outputs", "depth_format"],
+      "value": "jpg",
+      "expected": "metric depth output"
+    },
+    {
+      "id": "invalid-edit-parameter",
+      "path": ["edits", 0, "parameters", "spacing_m"],
+      "value": 0.0,
+      "expected": "must be greater than"
+    },
+    {
+      "id": "duplicate-edit-id",
+      "path": ["edits"],
+      "copy_first_edit": true,
+      "expected": "identifiers must be unique"
+    },
+    {
+      "id": "out-of-range-missing-index",
+      "path": ["family_parameters", "missing_instances"],
+      "value": [99],
+      "expected": "indices must be smaller"
+    },
+    {
+      "id": "unsafe-output-path",
+      "path": ["outputs", "output_root"],
+      "value": "../escaped",
+      "expected": "traverses a parent"
+    },
+    {
+      "id": "resource-profile-overflow",
+      "path": ["expected_resource_profile"],
+      "value": "smoke",
+      "expected": "profile cap"
+    },
+    {
+      "id": "unsupported-resource-profile",
+      "path": ["expected_resource_profile"],
+      "value": "unbounded",
+      "expected": "must be one of"
+    }
+  ]
+}

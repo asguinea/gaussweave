@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0.0",
+  "definitions_version": "definitions-v1.0",
+  "result_id": "result-fixture",
+  "run_id": "run-fixture",
+  "experiment_id": "exp-hardware-fixture-v1",
+  "scene_id": "syn-fixture",
+  "method": {
+    "method_id": "fixture",
+    "method_kind": "full_gs",
+    "version": "1",
+    "grammar_source": "none",
+    "canonical_selection": "none",
+    "membership_policy": "none",
+    "clipping_policy": "none",
+    "appearance_policy": "unchanged",
+    "residual_policy": "none",
+    "instancing_implementation": "none"
+  },
+  "operating_point_id": "fixture",
+  "seed": 0,
+  "status": "completed",
+  "provenance": {
+    "code_commit": "fixture",
+    "working_tree_dirty": false,
+    "configuration_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "environment_ref": "environment/fixture.json",
+    "artifact_inventory_ref": "artifacts/inventory.json",
+    "created_at": "2026-01-01T00:00:00Z"
+  },
+  "dataset": {
+    "dataset_id": "fixture-dataset",
+    "scene_manifest_ref": "datasets/fixture/scene_manifest.json",
+    "train_split": "train",
+    "validation_split": "validation",
+    "test_split": "test"
+  },
+  "artifacts": [{
+    "artifact_id": "config",
+    "artifact_type": "resolved_config",
+    "path": "configs/resolved.json",
+    "required": true,
+    "bytes": 0,
+    "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+  }],
+  "gaussian_counts": {
+    "source": 0,
+    "stored_unique": 0,
+    "stored_canonical": 0,
+    "stored_residual": 0,
+    "stored_total": 0,
+    "active_instances": 0,
+    "instantiated": 0,
+    "render_submitted": 0,
+    "render_visible": 0,
+    "excluded": 0
+  },
+  "metrics": [],
+  "accounting": {
+    "status": "not_measured",
+    "accounting_record_ref": null,
+    "semantic_raw_bytes": null,
+    "serialized_uncompressed_bytes": null,
+    "serialized_archive_bytes": null,
+    "full_gs_reference_bytes": null,
+    "compression_ratio": null,
+    "components": []
+  },
+  "resources": {
+    "resource_profile": "smoke",
+    "compliance": "not_measured",
+    "cpu_peak_rss_bytes": null,
+    "gpu_resident_bytes": null,
+    "gpu_peak_allocated_bytes": null,
+    "gpu_peak_reserved_bytes": null,
+    "process_gpu_peak_bytes": null,
+    "workspace_peak_bytes": null
+  },
+  "runtime": {
+    "status": "not_measured",
+    "resolution": [1, 1],
+    "output_buffers": [],
+    "warmup_count": 0,
+    "repetition_count": 0,
+    "frame_latency_ms_median": null,
+    "frame_latency_ms_p95": null,
+    "fps_median": null,
+    "transform_expansion_ms": null,
+    "edit_update_ms": null,
+    "edit_to_first_frame_ms": null
+  },
+  "qualitative_candidates": [],
+  "warnings": [],
+  "limitations": [],
+  "failure": null,
+  "exclusion": null,
+  "supersession": null,
+  "freeze": {"status": "unfrozen", "frozen_at": null, "record_digest": null}
+}

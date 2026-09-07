@@ -1,0 +1,16 @@
+{
+  "archive_sha256": "95e3a2dfedba3bd32ca54fc355eac6b15a11986954ccb02815a07535d0120a25",
+  "archive_url": "https://download.blender.org/release/Blender4.5/blender-4.5.12-linux-x64.tar.xz",
+  "blender_build_hash": "84afd5f785f7",
+  "blender_version": "4.5.12 LTS",
+  "embedded_python": "3.11.11",
+  "install_location": "/opt/gaussweave/blender-4.5.12-linux-x64",
+  "install_method": "checksum-verified extraction of the official portable Linux x64 archive",
+  "license": "GNU General Public License v3 or later",
+  "render_engines_required": [
+    "CYCLES"
+  ],
+  "role": "headless deterministic synthetic-scene generation qualification",
+  "schema_version": "1.0",
+  "selected_backend": "wsl"
+}

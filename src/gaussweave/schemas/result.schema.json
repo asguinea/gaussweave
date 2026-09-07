@@ -1,0 +1,1190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gaussweave.local/schemas/result.schema.json",
+  "title": "GaussWeave Result Record",
+  "description": "Validated result record for one run, scene, method condition, seed, and operating point.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "definitions_version",
+    "result_id",
+    "run_id",
+    "experiment_id",
+    "scene_id",
+    "method",
+    "operating_point_id",
+    "seed",
+    "status",
+    "provenance",
+    "dataset",
+    "artifacts",
+    "gaussian_counts",
+    "metrics",
+    "accounting",
+    "resources",
+    "runtime",
+    "qualitative_candidates",
+    "warnings",
+    "limitations",
+    "failure",
+    "exclusion",
+    "supersession",
+    "freeze"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "definitions_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "result_id": {
+      "type": "string",
+      "pattern": "^result-[a-z0-9][a-z0-9._-]*$"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run-[a-z0-9][a-z0-9._-]*$"
+    },
+    "experiment_id": {
+      "type": "string",
+      "pattern": "^exp-[a-z0-9][a-z0-9._-]*-v[0-9]+$"
+    },
+    "scene_id": {
+      "type": "string",
+      "pattern": "^(syn|real)-[a-z0-9][a-z0-9-]*$"
+    },
+    "method": {
+      "$ref": "#/$defs/method"
+    },
+    "operating_point_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "completed",
+        "failed",
+        "excluded",
+        "partial",
+        "superseded"
+      ]
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "dataset": {
+      "$ref": "#/$defs/dataset"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      },
+      "minItems": 1
+    },
+    "gaussian_counts": {
+      "$ref": "#/$defs/gaussianCounts"
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/metric"
+      },
+      "minItems": 0
+    },
+    "accounting": {
+      "$ref": "#/$defs/accounting"
+    },
+    "resources": {
+      "$ref": "#/$defs/resources"
+    },
+    "runtime": {
+      "$ref": "#/$defs/runtime"
+    },
+    "qualitative_candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/qualitativeCandidate"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "failure": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/failure"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "exclusion": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/exclusion"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "supersession": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/supersession"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "freeze": {
+      "$ref": "#/$defs/freeze"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "failed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "failure": {
+            "$ref": "#/$defs/failure"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "excluded"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exclusion": {
+            "$ref": "#/$defs/exclusion"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "superseded"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "supersession": {
+            "$ref": "#/$defs/supersession"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          {
+            "pattern": "^/"
+          },
+          {
+            "pattern": "^[A-Za-z]:[\\\\/]"
+          },
+          {
+            "pattern": "(^|/)\\.\\.(/|$)"
+          }
+        ]
+      }
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method_id",
+        "method_kind",
+        "version",
+        "grammar_source",
+        "canonical_selection",
+        "membership_policy",
+        "clipping_policy",
+        "appearance_policy",
+        "residual_policy",
+        "instancing_implementation"
+      ],
+      "properties": {
+        "method_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method_kind": {
+          "type": "string",
+          "enum": [
+            "full_gs",
+            "compressed_gs",
+            "oracle_gaussweave",
+            "detected_gaussweave",
+            "gs_edit_control",
+            "runtime_gaussweave",
+            "other"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "grammar_source": {
+          "type": "string",
+          "enum": [
+            "none",
+            "ground_truth",
+            "oracle",
+            "detected",
+            "manual",
+            "imported"
+          ]
+        },
+        "canonical_selection": {
+          "type": "string",
+          "enum": [
+            "none",
+            "source_instance",
+            "medoid_instance",
+            "optimized_canonical",
+            "synthetic_ground_truth"
+          ]
+        },
+        "membership_policy": {
+          "type": "string",
+          "enum": [
+            "none",
+            "center_inside",
+            "ellipsoid_overlap",
+            "mask_projected",
+            "explicit_annotation",
+            "hybrid"
+          ]
+        },
+        "clipping_policy": {
+          "type": "string",
+          "enum": [
+            "none",
+            "mean_inside",
+            "covariance_support",
+            "source_instance_mask",
+            "explicit_membership"
+          ]
+        },
+        "appearance_policy": {
+          "type": "string",
+          "enum": [
+            "unchanged",
+            "world_locked",
+            "local_rotated",
+            "view_independent_only"
+          ]
+        },
+        "residual_policy": {
+          "type": "string",
+          "enum": [
+            "none",
+            "per_instance_reference",
+            "grouped_reference",
+            "external_binding"
+          ]
+        },
+        "instancing_implementation": {
+          "type": "string",
+          "enum": [
+            "none",
+            "materialized_cpu",
+            "materialized_gpu",
+            "native_non_materialized",
+            "other"
+          ]
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code_commit",
+        "working_tree_dirty",
+        "configuration_digest",
+        "environment_ref",
+        "artifact_inventory_ref",
+        "created_at"
+      ],
+      "properties": {
+        "code_commit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "working_tree_dirty": {
+          "type": "boolean"
+        },
+        "dirty_patch_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "configuration_digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "environment_ref": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "artifact_inventory_ref": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset_id",
+        "scene_manifest_ref",
+        "train_split",
+        "validation_split",
+        "test_split"
+      ],
+      "properties": {
+        "dataset_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scene_manifest_ref": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "train_split": {
+          "type": "string",
+          "const": "train"
+        },
+        "validation_split": {
+          "type": "string",
+          "const": "validation"
+        },
+        "test_split": {
+          "type": "string",
+          "const": "test"
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "artifact_type",
+        "path",
+        "required",
+        "bytes",
+        "digest"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        },
+        "artifact_type": {
+          "type": "string",
+          "enum": [
+            "resolved_config",
+            "environment",
+            "checkpoint",
+            "grammar",
+            "binding",
+            "render",
+            "metric_observations",
+            "accounting_record",
+            "resource_record",
+            "failure_report",
+            "qualitative_panel",
+            "video",
+            "table",
+            "figure",
+            "other"
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "gaussianCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "stored_unique",
+        "stored_canonical",
+        "stored_residual",
+        "stored_total",
+        "active_instances",
+        "instantiated",
+        "render_submitted",
+        "render_visible",
+        "excluded"
+      ],
+      "properties": {
+        "source": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "stored_unique": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "stored_canonical": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "stored_residual": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "stored_total": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "active_instances": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "instantiated": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "render_submitted": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "render_visible": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "excluded": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metric_id",
+        "metric_version",
+        "value",
+        "unit",
+        "orientation",
+        "level",
+        "status",
+        "sample_count",
+        "aggregation",
+        "mask_or_region",
+        "source_artifacts",
+        "warnings"
+      ],
+      "properties": {
+        "metric_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "metric_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unit": {
+          "type": "string",
+          "minLength": 1
+        },
+        "orientation": {
+          "type": "string",
+          "enum": [
+            "higher_is_better",
+            "lower_is_better",
+            "target_is_zero",
+            "descriptive_only"
+          ]
+        },
+        "level": {
+          "type": "string",
+          "enum": [
+            "observation",
+            "scene",
+            "family",
+            "dataset",
+            "campaign"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "valid",
+            "undefined",
+            "not_applicable",
+            "computation_failed",
+            "run_failed",
+            "excluded",
+            "not_measured"
+          ]
+        },
+        "sample_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "aggregation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mask_or_region": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_artifacts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "accounting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "accounting_record_ref",
+        "semantic_raw_bytes",
+        "serialized_uncompressed_bytes",
+        "serialized_archive_bytes",
+        "full_gs_reference_bytes",
+        "compression_ratio",
+        "components"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "valid",
+            "partial",
+            "failed",
+            "not_applicable",
+            "not_measured"
+          ]
+        },
+        "accounting_record_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "semantic_raw_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "serialized_uncompressed_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "serialized_archive_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "full_gs_reference_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "compression_ratio": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "category",
+              "bytes"
+            ],
+            "properties": {
+              "category": {
+                "type": "string",
+                "enum": [
+                  "unique",
+                  "canonical",
+                  "transforms",
+                  "residuals",
+                  "grammar",
+                  "binding",
+                  "required_metadata",
+                  "required_indexes",
+                  "full_gs_parameters",
+                  "quantization_metadata",
+                  "other"
+                ]
+              },
+              "bytes": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_profile",
+        "compliance",
+        "cpu_peak_rss_bytes",
+        "gpu_resident_bytes",
+        "gpu_peak_allocated_bytes",
+        "gpu_peak_reserved_bytes",
+        "process_gpu_peak_bytes",
+        "workspace_peak_bytes"
+      ],
+      "properties": {
+        "resource_profile": {
+          "type": "string",
+          "enum": [
+            "smoke",
+            "quick",
+            "standard",
+            "extended"
+          ]
+        },
+        "compliance": {
+          "type": "string",
+          "enum": [
+            "compliant",
+            "compliant_with_warning",
+            "noncompliant",
+            "resource_failure",
+            "not_measured"
+          ]
+        },
+        "cpu_peak_rss_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "gpu_resident_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "gpu_peak_allocated_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "gpu_peak_reserved_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "process_gpu_peak_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "workspace_peak_bytes": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "resolution",
+        "output_buffers",
+        "warmup_count",
+        "repetition_count",
+        "frame_latency_ms_median",
+        "frame_latency_ms_p95",
+        "fps_median",
+        "transform_expansion_ms",
+        "edit_update_ms",
+        "edit_to_first_frame_ms"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "valid",
+            "partial",
+            "failed",
+            "not_applicable",
+            "not_measured"
+          ]
+        },
+        "resolution": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "output_buffers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "rgb",
+              "alpha",
+              "depth",
+              "normals",
+              "ids",
+              "mask"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "warmup_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "repetition_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "frame_latency_ms_median": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "frame_latency_ms_p95": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "fps_median": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "transform_expansion_ms": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "edit_update_ms": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "edit_to_first_frame_ms": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "qualitativeCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "scene_id",
+        "camera_id",
+        "role",
+        "selection_policy",
+        "artifact_ids",
+        "metric_refs"
+      ],
+      "properties": {
+        "candidate_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        },
+        "scene_id": {
+          "type": "string",
+          "pattern": "^(syn|real)-[a-z0-9][a-z0-9-]*$"
+        },
+        "camera_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "fixed",
+            "median",
+            "best",
+            "worst",
+            "stratified",
+            "random",
+            "failure",
+            "manual_illustration"
+          ]
+        },
+        "selection_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "metric_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "category",
+        "stage",
+        "message",
+        "failure_report_ref",
+        "included_in_denominator"
+      ],
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": [
+            "invalid_configuration",
+            "missing_data",
+            "environment_incompatibility",
+            "gpu_out_of_memory",
+            "cpu_out_of_memory",
+            "disk_space",
+            "gs_numerical_failure",
+            "grammar_induction_failure",
+            "invalid_grammar",
+            "canonicalization_failure",
+            "renderer_failure",
+            "metric_failure",
+            "interrupted",
+            "unknown"
+          ]
+        },
+        "stage": {
+          "type": "string",
+          "minLength": 1
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "failure_report_ref": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "included_in_denominator": {
+          "type": "boolean"
+        }
+      }
+    },
+    "exclusion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reason",
+        "approved_by",
+        "approved_at",
+        "report_ref"
+      ],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "enum": [
+            "corrupted_dataset",
+            "generator_defect",
+            "invalid_camera_calibration",
+            "confirmed_implementation_defect",
+            "unrecoverable_hardware_interruption",
+            "metric_input_corruption"
+          ]
+        },
+        "approved_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approved_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "report_ref": {
+          "$ref": "#/$defs/relativePath"
+        }
+      }
+    },
+    "supersession": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "superseded_by",
+        "reason",
+        "compatibility"
+      ],
+      "properties": {
+        "superseded_by": {
+          "type": "string",
+          "pattern": "^result-[a-z0-9][a-z0-9._-]*$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "compatibility": {
+          "type": "string",
+          "enum": [
+            "fully_compatible",
+            "compatible_after_migration",
+            "comparable_not_identical",
+            "incompatible"
+          ]
+        }
+      }
+    },
+    "freeze": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "frozen_at",
+        "record_digest"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "unfrozen",
+            "frozen",
+            "superseded"
+          ]
+        },
+        "frozen_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "record_digest": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "frozen"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "frozen_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "record_digest": {
+                "$ref": "#/$defs/digest"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

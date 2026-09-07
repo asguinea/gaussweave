@@ -1,0 +1,25 @@
+{
+  "apt_repository": "https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/",
+  "cmake": "3.28.3",
+  "cuda_home": "/usr/local/cuda-13.0",
+  "cuda_toolkit": {
+    "cuda-cudart-dev-13-0": "13.0.96-1",
+    "cuda-nvcc-13-0": "13.0.88-1",
+    "cuda-toolkit-13-0": "13.0.3-1"
+  },
+  "g++": "13.3.0",
+  "gcc": "13.3.0",
+  "git": "2.43.0",
+  "gsplat": "1.5.3",
+  "linux_distribution": "Ubuntu 24.04.4 LTS",
+  "linux_kernel": "6.6.87.2-microsoft-standard-WSL2",
+  "ninja": "1.11.1",
+  "nvidia_driver": "591.84",
+  "nvidia_linux_display_driver_installed": false,
+  "nvcc": "13.0.88",
+  "python": "3.12.3",
+  "pytorch": "2.11.0+cu130",
+  "pytorch_cuda_runtime": "13.0",
+  "schema_version": "1.0",
+  "wsl_distribution": "Ubuntu 24.04 on WSL 2"
+}

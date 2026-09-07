@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0",
+  "definitions_version": "definitions-v1.0",
+  "experiment_id": "exp-hardware-fixture-v1",
+  "family": "hardware_calibration",
+  "mode": "development",
+  "research_questions": ["RQ1"],
+  "dataset": {
+    "dataset_id": "fixture-dataset",
+    "scene_selection": {"scene_ids": ["syn-fixture"]},
+    "train_split": "train",
+    "validation_split": "validation",
+    "test_split": "test"
+  },
+  "execution": {
+    "resource_profile": "smoke",
+    "seeds": [0],
+    "attempt": 1,
+    "environment_requirements": {
+      "wsl_required": false,
+      "cuda_required": false,
+      "gpu_required": false
+    }
+  },
+  "method": {
+    "method_id": "fixture",
+    "method_kind": "full_gs",
+    "version": "1",
+    "operating_point": {}
+  },
+  "training": {
+    "enabled": false,
+    "config_ref": "configs/training/fixture.json",
+    "checkpoint_selection": {
+      "policy": "final_iteration",
+      "metric": null,
+      "direction": null,
+      "iteration": null
+    },
+    "test_data_forbidden": true
+  },
+  "representation": {
+    "grammar_source": "none",
+    "canonical_selection": "none",
+    "membership_policy": "none",
+    "clipping_policy": "none",
+    "appearance_policy": "unchanged",
+    "residual_policy": "none",
+    "instancing_implementation": "none"
+  },
+  "rendering": {
+    "width": 1,
+    "height": 1,
+    "camera_batch_size": 1,
+    "outputs": ["rgb"],
+    "warmup_frames": 0,
+    "measured_repetitions": 1
+  },
+  "metrics": {"metric_ids": ["psnr"], "aggregation_unit": "scene"},
+  "accounting": {
+    "storage_required": false,
+    "gpu_memory_required": false,
+    "cpu_memory_required": false,
+    "runtime_required": false
+  },
+  "stopping": {"rules": [{"kind": "iteration_count", "value": 1}]},
+  "failure_policy": {
+    "preserve_failed_runs": true,
+    "silent_parameter_change_forbidden": true,
+    "retry_policy": "new_attempt_same_config",
+    "allowed_exclusion_reasons": []
+  },
+  "outputs": {
+    "run_root": "runs/fixture",
+    "save_resolved_config": true,
+    "save_logs": true,
+    "save_renders": false,
+    "save_metrics": true,
+    "save_accounting": true,
+    "save_failures": true
+  },
+  "freeze": {
+    "status": "unfrozen",
+    "frozen_at": null,
+    "code_commit": null,
+    "environment_lock_digest": null,
+    "scene_list_digest": null,
+    "configuration_digest": null
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "config_schema_version": "1.0.0",
+  "definitions_version": "definitions-v1.0",
+  "dataset_id": "gaussweave-synthetic-v1",
+  "scene_id": "syn-corridor-bays-development-s202",
+  "source_type": "synthetic",
+  "family": "corridor",
+  "subsets": ["development"],
+  "master_seed": 202,
+  "seed_policy": {"version": "sha256-v1", "overrides": {}, "streams": ["geometry", "materials", "lighting", "cameras", "occluders", "edits", "annotations"]},
+  "derived_seeds": {"geometry": 3102595628, "materials": 4105609448, "lighting": 160175124, "cameras": 3813777389, "occluders": 2817924575, "edits": 469384024, "annotations": 165957669},
+  "coordinate_system": {"handedness": "right", "up_axis": "+Z", "unit": "meters", "camera_axes": {"right": "+X", "up": "+Y", "forward": "-Z"}, "matrix_layout": "row_major"},
+  "generator": {"name": "gaussweave-procedural", "version": "scene-config-v1", "implementation_status": "configuration_only", "external_assets": []},
+  "render": {
+    "engine": "cycles", "compute_device": "gpu", "width": 512, "height": 384,
+    "resolution_percentage": 100, "samples": 64, "denoise": true,
+    "color_space": "Linear", "view_transform": "Standard", "look": "",
+    "exposure": 0.0, "gamma": 1.0,
+    "background": {"kind": "solid", "rgba": [0.12, 0.12, 0.14, 1.0], "has_valid_depth": false}
+  },
+  "camera": {
+    "trajectory": "corridor_path",
+    "split_counts": {"train": 24, "validation": 8, "test": 8},
+    "image_width": 512, "image_height": 384,
+    "focal_mode": "horizontal_fov_degrees", "focal_length_mm": null,
+    "horizontal_fov_degrees": 62.0, "principal_point": "centered",
+    "principal_point_px": null, "near_m": 0.1, "far_m": 35.0,
+    "position_bounds_m": {"min": [1.0, -0.5, 1.3], "max": [15.0, 0.5, 1.8]},
+    "orientation_bounds_degrees": {"yaw": [-12.0, 12.0], "pitch": [-8.0, 8.0], "roll": [0.0, 0.0]},
+    "minimum_separation_m": 0.3, "minimum_angular_separation_degrees": 2.0,
+    "minimum_structure_coverage": 0.65, "seed": 3813777389,
+    "family_intent": {"longitudinal_range_m": [1.0, 15.0], "lateral_offset_m": [-0.5, 0.5], "height_m": [1.3, 1.8]}
+  },
+  "structure": {
+    "repetition_level": "high", "spacing_regime": "standard",
+    "terminal_complexity": "simple", "regularity": "strict",
+    "missing_instance_policy": "none", "negative_control": false,
+    "negative_control_label": null, "expected_repeat_groups": ["corridor-bays"],
+    "expected_canonical_terminal_categories": ["door-terminal"]
+  },
+  "family_parameters": {
+    "family": "corridor", "length_m": 18.0, "width_m": 3.2, "height_m": 3.0,
+    "bay_count": 8, "bay_spacing_m": 2.0, "terminal_width_m": 0.9,
+    "terminal_height_m": 2.1, "terminal_depth_m": 0.15, "sidedness": "two_sided",
+    "ceiling_light_mode": "periodic", "end_wall_mode": "closed",
+    "furniture_occluder_mode": "sparse", "end_margin_m": 0.8,
+    "missing_pattern": "none", "missing_instances": []
+  },
+  "appearance": {
+    "regime": "alternating",
+    "base_material": "painted-plaster", "base_color": [0.68, 0.7, 0.72, 1.0],
+    "roughness": 0.55, "metallic": 0.0,
+    "palette": [[0.68, 0.7, 0.72, 1.0], [0.35, 0.38, 0.42, 1.0]],
+    "roughness_range": [0.4, 0.7], "metallic_range": [0.0, 0.1],
+    "variation_amplitude": 0.03, "variation_groups": ["corridor-bays"],
+    "group_size": null, "alternate_period": 2, "texture_mode": "none",
+    "seed": 4105609448, "exact_canonical_reuse": false,
+    "residual_policy_label": "alternating-material-residual"
+  },
+  "lighting": {
+    "regime": "mixed_interior", "energy_range": [0.8, 2.4],
+    "world_energy": 0.2, "world_color": [0.25, 0.28, 0.32],
+    "key_light_type": "area", "key_energy": 800.0,
+    "key_color": [1.0, 0.9, 0.75], "key_position_m": [8.0, 0.0, 2.7],
+    "color_temperature_kelvin": [3500.0, 5500.0],
+    "direction_degrees": [0.0, -90.0, 0.0], "deterministic_variation": true,
+    "source_count": 9, "fill_light_count": 8, "fill_light_energy": 220.0,
+    "spatial_variation_amplitude": 0.12, "seed": 160175124,
+    "cast_shadows": true, "exposure_intent": "mixed-interior-balanced"
+  },
+  "occlusion": {
+    "regime": "inter_instance", "occluder_categories": ["bench", "plant"],
+    "target_fraction": [0.05, 0.18], "qualitative_level": "partial",
+    "occluder_count": 3, "foreground_distance_m": [1.0, 4.0],
+    "placement_bounds_m": {"min": [1.0, -1.0, 0.0], "max": [15.0, 1.0, 1.5]},
+    "may_overlap_repeated_elements": true, "allow_camera_truncation": false,
+    "seed": 2817924575, "minimum_visible_fraction": 0.65
+  },
+  "annotations": {
+    "emit_ground_truth_grammar": true, "grammar_source_kind": "ground_truth",
+    "emit_instance_masks": true, "emit_semantic_masks": true,
+    "emit_terminal_annotations": true, "emit_repeat_group_annotations": true,
+    "emit_visibility": true, "grammar_path": "annotations/grammar.json",
+    "instance_table_path": "annotations/instances.json",
+    "visibility_path": "annotations/visibility.json"
+  },
+  "outputs": {
+    "output_root": "datasets/generated/corridor-development-s202",
+    "rgb": true, "rgb_format": "png", "rgb_bit_depth": 8,
+    "depth": true, "depth_format": "npy", "depth_unit": "meters",
+    "depth_semantics": "metric_ray_distance", "normals": true,
+    "normals_format": "npy", "normals_coordinate_system": "world",
+    "masks": true, "mask_format": "png", "mask_bit_depth": 16,
+    "semantic_masks": true, "terminal_masks": true, "instance_masks": true,
+    "alpha": false, "object_ids": true, "material_ids": false,
+    "geometry_format": "glb", "generate_preview": true,
+    "write_scene_file": true, "write_checksums": true
+  },
+  "edits": [{
+    "edit_id": "edit-corridor-count", "operation": "change_repeat_count",
+    "target_role": "corridor-bays", "parameters": {"new_count": 10},
+    "applicability": "required", "camera_reuse": "reuse_all",
+    "changed_region_path": "edits/edit-corridor-count/changed-mask.png",
+    "unchanged_region_path": "edits/edit-corridor-count/unchanged-mask.png",
+    "edit_seed": 469384024
+  }],
+  "expected_resource_profile": "quick",
+  "extended_mode": false,
+  "notes": "Configuration intent only; no geometry is generated by scene configuration.",
+  "provenance": {
+    "source_config": "configs/scenes/corridor-development-s202.json",
+    "definitions": ["definitions/05_data_and_scene_specification.md", "definitions/06_grammar_model.md"],
+    "authoring_tool": "gaussweave-scene-config-v1", "created_at": null
+  }
+}

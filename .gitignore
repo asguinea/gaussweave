@@ -1,0 +1,83 @@
+# Python bytecode and tool caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.pytest-temp/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Virtual environments and dependency caches
+.venv/
+.venv-*/
+venv/
+env/
+.uv-cache/
+
+# Packaging outputs
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Editors, operating systems, and local agents
+.idea/
+.vscode/
+.agents/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+configs/local.*
+
+# Generated or externally licensed material
+/artifacts/
+/checkpoints/
+/datasets/
+/private/
+/reports/
+/results/
+/runs/
+*.ckpt
+*.npy
+*.npz
+*.ply
+*.pt
+*.pth
+
+# Native and CUDA build products
+extensions/**/build/
+extensions/**/*.so
+extensions/**/*.pyd
+extensions/**/*.dll
+extensions/**/*.dylib
+extensions/**/*.o
+extensions/**/*.obj
+extensions/**/*.ptx
+extensions/**/*.cubin
+
+# Blender temporary and backup files
+*.blend1
+*.blend2
+*.blend@
+*.blend~
+
+# Local archives, previews, temporary files, and logs
+/*.zip
+/sample_*.pdf
+/tmp/
+/temp/
+*.log

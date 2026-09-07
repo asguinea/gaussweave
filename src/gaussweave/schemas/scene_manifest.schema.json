@@ -1,0 +1,1086 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gaussweave.local/schemas/scene_manifest.schema.json",
+  "title": "GaussWeave Scene Manifest",
+  "description": "Manifest for one synthetic or real GaussWeave scene.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "scene_id",
+    "source_type",
+    "family",
+    "subsets",
+    "provenance",
+    "coordinate_system",
+    "image_spec",
+    "cameras",
+    "splits",
+    "assets",
+    "structure",
+    "edits",
+    "checksums",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "definitions_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dataset_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9.-]*$"
+    },
+    "scene_id": {
+      "type": "string",
+      "pattern": "^(syn|real)-[a-z0-9][a-z0-9-]*$"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "synthetic",
+        "real"
+      ]
+    },
+    "family": {
+      "type": "string",
+      "enum": [
+        "facade",
+        "corridor",
+        "colonnade",
+        "other"
+      ]
+    },
+    "family_detail": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "subsets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "smoke",
+          "development",
+          "calibration",
+          "frozen_v1",
+          "reserve",
+          "real_supporting"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "master_seed": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "derived_seeds": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "coordinate_system": {
+      "$ref": "#/$defs/coordinateSystem"
+    },
+    "image_spec": {
+      "$ref": "#/$defs/imageSpec"
+    },
+    "cameras": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "records"
+          ],
+          "properties": {
+            "records": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/camera"
+              },
+              "minItems": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "records_path"
+          ],
+          "properties": {
+            "records_path": {
+              "$ref": "#/$defs/relativePath"
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "gaussweave_camera_json_v1"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "splits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "train",
+        "validation",
+        "test"
+      ],
+      "properties": {
+        "train": {
+          "$ref": "#/$defs/cameraIdList"
+        },
+        "validation": {
+          "$ref": "#/$defs/cameraIdList"
+        },
+        "test": {
+          "$ref": "#/$defs/cameraIdList"
+        },
+        "split_policy": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "procedural_parameters": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/asset"
+      },
+      "minItems": 1
+    },
+    "structure": {
+      "$ref": "#/$defs/structure"
+    },
+    "edits": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/editVariant"
+      }
+    },
+    "checksums": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "manifest_path"
+      ],
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "const": "sha256"
+        },
+        "manifest_path": {
+          "$ref": "#/$defs/relativePath"
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "source_type": {
+            "const": "synthetic"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "master_seed",
+          "procedural_parameters"
+        ],
+        "properties": {
+          "master_seed": {
+            "type": "integer"
+          },
+          "provenance": {
+            "properties": {
+              "generator": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "generator"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "source_type": {
+            "const": "real"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "provenance": {
+            "required": [
+              "capture"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          {
+            "pattern": "^/"
+          },
+          {
+            "pattern": "^[A-Za-z]:[\\\\/]"
+          },
+          {
+            "pattern": "(^|/)\\.\\.(/|$)"
+          }
+        ]
+      }
+    },
+    "matrix4": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 16,
+      "maxItems": 16
+    },
+    "vector3": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "bounds3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "min",
+        "max"
+      ],
+      "properties": {
+        "min": {
+          "$ref": "#/$defs/vector3"
+        },
+        "max": {
+          "$ref": "#/$defs/vector3"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "created_at",
+        "source_description"
+      ],
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source_description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generator": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "version",
+            "blender_version",
+            "config_path"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            },
+            "commit": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "blender_version": {
+              "type": "string"
+            },
+            "render_engine": {
+              "type": "string",
+              "enum": [
+                "cycles",
+                "eevee",
+                "eevee_next",
+                "other"
+              ]
+            },
+            "config_path": {
+              "$ref": "#/$defs/relativePath"
+            },
+            "command": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "capture": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "method"
+          ],
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "rgb_video",
+                "rgb_images",
+                "rgbd",
+                "lidar",
+                "other"
+              ]
+            },
+            "device": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "date": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date"
+            },
+            "location_description": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "camera_reconstruction": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "colmap",
+                "pycolmap",
+                "known",
+                "other",
+                null
+              ]
+            }
+          }
+        },
+        "external_assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "license"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "source": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "license": {
+                "type": "string"
+              },
+              "checksum": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "coordinateSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "handedness",
+        "up_axis",
+        "world_units",
+        "camera_convention",
+        "transform_storage"
+      ],
+      "properties": {
+        "handedness": {
+          "type": "string",
+          "const": "right"
+        },
+        "up_axis": {
+          "type": "string",
+          "const": "+Z"
+        },
+        "world_units": {
+          "type": "string",
+          "const": "meters"
+        },
+        "camera_convention": {
+          "type": "string",
+          "enum": [
+            "blender_x_right_y_up_minus_z_forward",
+            "opencv_x_right_y_down_z_forward",
+            "other"
+          ]
+        },
+        "transform_storage": {
+          "type": "string",
+          "const": "row_major"
+        }
+      }
+    },
+    "imageSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height",
+        "rgb_format",
+        "rgb_color_space",
+        "depth_format",
+        "depth_semantics",
+        "background"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rgb_format": {
+          "type": "string",
+          "enum": [
+            "png",
+            "exr"
+          ]
+        },
+        "rgb_bit_depth": {
+          "type": "integer",
+          "enum": [
+            8,
+            16,
+            32
+          ]
+        },
+        "rgb_color_space": {
+          "type": "string",
+          "minLength": 1
+        },
+        "view_transform": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "look": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "exposure": {
+          "type": "number"
+        },
+        "gamma": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "depth_format": {
+          "type": "string",
+          "enum": [
+            "exr",
+            "npy",
+            "npz"
+          ]
+        },
+        "depth_semantics": {
+          "type": "string",
+          "const": "metric_distance_along_camera_ray"
+        },
+        "depth_invalid_value": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "nan",
+                "inf"
+              ]
+            }
+          ]
+        },
+        "normals_format": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "exr",
+            "npy",
+            "npz",
+            null
+          ]
+        },
+        "normals_space": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "world",
+            "camera",
+            null
+          ]
+        },
+        "background": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "depth_valid"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "solid",
+                "environment_map",
+                "transparent",
+                "other"
+              ]
+            },
+            "rgb": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "minItems": 3,
+              "maxItems": 4
+            },
+            "depth_valid": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "camera": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "camera_id",
+        "width",
+        "height",
+        "model",
+        "fx",
+        "fy",
+        "cx",
+        "cy",
+        "world_from_camera",
+        "near",
+        "far",
+        "rgb_path"
+      ],
+      "properties": {
+        "camera_id": {
+          "type": "string",
+          "pattern": "^cam-(train|val|test)-[0-9]{4,}$"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "model": {
+          "type": "string",
+          "const": "pinhole"
+        },
+        "fx": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "fy": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "cx": {
+          "type": "number"
+        },
+        "cy": {
+          "type": "number"
+        },
+        "world_from_camera": {
+          "$ref": "#/$defs/matrix4"
+        },
+        "near": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "far": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "rgb_path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "depth_path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "normals_path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "semantic_mask_path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminal_mask_path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "instance_mask_path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trajectory_parameter": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "cameraIdList": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^cam-(train|val|test)-[0-9]{4,}$"
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_id",
+        "kind",
+        "path",
+        "required",
+        "generated"
+      ],
+      "properties": {
+        "asset_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "scene_source",
+            "rgb_directory",
+            "depth_directory",
+            "normals_directory",
+            "semantic_masks",
+            "terminal_masks",
+            "instance_masks",
+            "edit_masks",
+            "scene_mesh",
+            "collision_mesh",
+            "terminal_meshes",
+            "grammar",
+            "terminal_annotations",
+            "instance_annotations",
+            "split_annotations",
+            "camera_records",
+            "preview",
+            "other"
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "generated": {
+          "type": "boolean"
+        },
+        "format": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "structure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "annotation_type",
+        "grammar_path",
+        "terminals_path",
+        "instances_path",
+        "repeat_groups",
+        "annotation_provenance"
+      ],
+      "properties": {
+        "annotation_type": {
+          "type": "string",
+          "enum": [
+            "ground_truth",
+            "manual",
+            "semi_automatic",
+            "none"
+          ]
+        },
+        "grammar_path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "terminals_path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "instances_path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "splits_path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "repeat_groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repeatGroup"
+          }
+        },
+        "annotation_provenance": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "method"
+          ],
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "generator_ground_truth",
+                "manual",
+                "semi_automatic",
+                "none"
+              ]
+            },
+            "annotator": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "confidence": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        }
+      }
+    },
+    "repeatGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repeat_group_id",
+        "terminal_id",
+        "instance_ids",
+        "count",
+        "axis",
+        "nominal_spacing",
+        "regularity"
+      ],
+      "properties": {
+        "repeat_group_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        },
+        "terminal_id": {
+          "type": "string",
+          "pattern": "^terminal-[a-z0-9][a-z0-9._-]*$"
+        },
+        "instance_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^instance-[a-z0-9][a-z0-9._-]*$"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "axis": {
+          "$ref": "#/$defs/vector3"
+        },
+        "nominal_spacing": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "regularity": {
+          "type": "string",
+          "enum": [
+            "strict",
+            "mildly_irregular",
+            "disrupted",
+            "weak"
+          ]
+        },
+        "missing_indices": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "uniqueItems": true
+        },
+        "tolerance": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "editVariant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "edit_id",
+        "operation",
+        "spec_path",
+        "scene_manifest_path",
+        "target_id",
+        "parameters",
+        "applicable",
+        "output_directory"
+      ],
+      "properties": {
+        "edit_id": {
+          "type": "string",
+          "pattern": "^edit-[a-z0-9][a-z0-9-]*$"
+        },
+        "operation": {
+          "type": "string",
+          "enum": [
+            "change_repeat_count",
+            "remove_region",
+            "change_spacing",
+            "scale_terminal",
+            "replace_terminal",
+            "remove_instances",
+            "extend_region",
+            "other"
+          ]
+        },
+        "spec_path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "scene_manifest_path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "target_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "applicable": {
+          "type": "boolean"
+        },
+        "inapplicable_reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "output_directory": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "changed_region_mask_directory": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unchanged_region_mask_directory": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "camera_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^cam-(val|test)-[0-9]{4,}$"
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

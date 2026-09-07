@@ -1,0 +1,44 @@
+name: Bug report
+description: Report incorrect or unexpected GaussWeave behavior.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for helping improve GaussWeave.
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproduction
+      description: Include commands, configuration, seeds, and a minimal code sample.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS/WSL, Python, uv, commit, GPU/driver, CUDA, and Blender as relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or traceback
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, personal data, and restricted artifacts.
+          required: true
+        - label: I searched existing issues for duplicates.
+          required: true

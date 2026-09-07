@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Quality and tests (Python 3.12)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      - name: Synchronize locked development environment
+        run: uv sync --frozen --extra dev
+
+      - name: Check formatting
+        run: uv run ruff format --check .
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Type-check
+        run: uv run mypy
+
+      - name: Test
+        run: uv run pytest --cov=gaussweave --cov-report=term-missing --cov-report=xml
+
+      - name: Build distributions
+        run: uv build
+
+      - name: Verify wheel installation and packaged schemas
+        shell: bash
+        run: |
+          cd /tmp
+          uv run --isolated --no-project \
+            --with "$GITHUB_WORKSPACE/dist/gaussweave-0.1.0-py3-none-any.whl" \
+            python - <<'PY'
+          from importlib.resources import files
+          import gaussweave
+
+          assert gaussweave.__version__ == "0.1.0"
+          schemas = files("gaussweave").joinpath("schemas")
+          assert schemas.joinpath("experiment.schema.json").is_file()
+          print(gaussweave.__version__)
+          PY

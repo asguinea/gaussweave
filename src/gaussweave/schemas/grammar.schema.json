@@ -1,0 +1,1259 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gaussweave.local/schemas/grammar.schema.json",
+  "title": "GaussWeave Grammar",
+  "description": "Shared structural grammar for ground-truth, oracle, detected, imported, and edited GaussWeave representations.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "definitions_version",
+    "grammar_id",
+    "scene_id",
+    "source",
+    "coordinate_system",
+    "root_node_id",
+    "nodes",
+    "completeness",
+    "diagnostics",
+    "parent_grammar_id",
+    "derivation",
+    "content_digest"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "definitions_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "grammar_id": {
+      "type": "string",
+      "pattern": "^grammar-[a-z0-9][a-z0-9._-]*$"
+    },
+    "scene_id": {
+      "type": "string",
+      "pattern": "^(syn|real)-[a-z0-9][a-z0-9-]*$"
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "coordinate_system": {
+      "$ref": "#/$defs/coordinateSystem"
+    },
+    "root_node_id": {
+      "$ref": "#/$defs/nodeId"
+    },
+    "nodes": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/nodeId"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "semantic_vocabulary_ref": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/relativePath"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "completeness": {
+      "$ref": "#/$defs/completeness"
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      }
+    },
+    "parent_grammar_id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^grammar-[a-z0-9][a-z0-9._-]*$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "derivation": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/derivation"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "content_digest": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "attributes": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "nodeId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9][a-z0-9._]*)+$"
+    },
+    "terminalId": {
+      "type": "string",
+      "pattern": "^terminal-[a-z0-9][a-z0-9._-]*$"
+    },
+    "instanceId": {
+      "type": "string",
+      "pattern": "^instance-[a-z0-9][a-z0-9._-]*$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          {
+            "pattern": "^/"
+          },
+          {
+            "pattern": "^[A-Za-z]:[\\\\/]"
+          },
+          {
+            "pattern": "(^|/)\\.\\.(/|$)"
+          }
+        ]
+      }
+    },
+    "finiteNumber": {
+      "type": "number"
+    },
+    "vector2": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finiteNumber"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "vector3": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finiteNumber"
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "integerVector2": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "matrix4": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finiteNumber"
+      },
+      "minItems": 16,
+      "maxItems": 16
+    },
+    "bounds3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "min",
+        "max"
+      ],
+      "properties": {
+        "min": {
+          "$ref": "#/$defs/vector3"
+        },
+        "max": {
+          "$ref": "#/$defs/vector3"
+        }
+      }
+    },
+    "semantic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "category",
+        "subcategory",
+        "tags"
+      ],
+      "properties": {
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subcategory": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "method",
+        "confidence"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "ground_truth",
+            "manual",
+            "oracle",
+            "detected",
+            "edited",
+            "imported"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "source_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "diagnostics_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parent_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "method",
+        "confidence"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "ground_truth",
+            "manual",
+            "oracle",
+            "detected",
+            "edited",
+            "imported"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "run_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "created_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "detected"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "confidence": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "coordinateSystem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "handedness",
+        "up_axis",
+        "world_units",
+        "transform_storage",
+        "vector_convention"
+      ],
+      "properties": {
+        "handedness": {
+          "type": "string",
+          "const": "right"
+        },
+        "up_axis": {
+          "type": "string",
+          "const": "+Z"
+        },
+        "world_units": {
+          "type": "string",
+          "const": "meters"
+        },
+        "transform_storage": {
+          "type": "string",
+          "const": "row_major"
+        },
+        "vector_convention": {
+          "type": "string",
+          "const": "column_vectors"
+        }
+      }
+    },
+    "commonNodeFields": {
+      "type": "object",
+      "required": [
+        "node_id",
+        "node_type",
+        "label",
+        "enabled",
+        "local_from_parent",
+        "local_bounds",
+        "semantic",
+        "attributes",
+        "provenance"
+      ],
+      "properties": {
+        "node_id": {
+          "$ref": "#/$defs/nodeId"
+        },
+        "node_type": {
+          "type": "string",
+          "enum": [
+            "root",
+            "split",
+            "repeat",
+            "terminal"
+          ]
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "local_from_parent": {
+          "$ref": "#/$defs/matrix4"
+        },
+        "local_bounds": {
+          "$ref": "#/$defs/bounds3"
+        },
+        "semantic": {
+          "$ref": "#/$defs/semantic"
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      }
+    },
+    "rootNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/commonNodeFields"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "node_id",
+            "node_type",
+            "label",
+            "enabled",
+            "local_from_parent",
+            "local_bounds",
+            "semantic",
+            "attributes",
+            "provenance",
+            "children"
+          ],
+          "properties": {
+            "node_id": {
+              "$ref": "#/$defs/nodeId"
+            },
+            "node_type": {
+              "const": "root"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "local_from_parent": {
+              "$ref": "#/$defs/matrix4"
+            },
+            "local_bounds": {
+              "$ref": "#/$defs/bounds3"
+            },
+            "semantic": {
+              "$ref": "#/$defs/semantic"
+            },
+            "attributes": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "provenance": {
+              "$ref": "#/$defs/provenance"
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/nodeId"
+              },
+              "uniqueItems": true
+            }
+          }
+        }
+      ]
+    },
+    "splitNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/commonNodeFields"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "node_id",
+            "node_type",
+            "label",
+            "enabled",
+            "local_from_parent",
+            "local_bounds",
+            "semantic",
+            "attributes",
+            "provenance",
+            "split_kind",
+            "axis",
+            "plane_normal",
+            "boundaries",
+            "children",
+            "child_intervals",
+            "coverage_policy"
+          ],
+          "properties": {
+            "node_id": {
+              "$ref": "#/$defs/nodeId"
+            },
+            "node_type": {
+              "const": "split"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "local_from_parent": {
+              "$ref": "#/$defs/matrix4"
+            },
+            "local_bounds": {
+              "$ref": "#/$defs/bounds3"
+            },
+            "semantic": {
+              "$ref": "#/$defs/semantic"
+            },
+            "attributes": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "provenance": {
+              "$ref": "#/$defs/provenance"
+            },
+            "split_kind": {
+              "type": "string",
+              "enum": [
+                "axis_aligned",
+                "plane_aligned",
+                "explicit_regions"
+              ]
+            },
+            "axis": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "x",
+                "y",
+                "z",
+                null
+              ]
+            },
+            "plane_normal": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/vector3"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "boundaries": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/finiteNumber"
+              }
+            },
+            "children": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/nodeId"
+              },
+              "uniqueItems": true,
+              "minItems": 1
+            },
+            "child_intervals": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/vector2"
+              }
+            },
+            "coverage_policy": {
+              "type": "string",
+              "enum": [
+                "exact",
+                "allow_gaps",
+                "allow_overlap",
+                "allow_gaps_and_overlap"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "split_kind": {
+                    "const": "axis_aligned"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "axis": {
+                    "type": "string",
+                    "enum": [
+                      "x",
+                      "y",
+                      "z"
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "split_kind": {
+                    "const": "plane_aligned"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "plane_normal": {
+                    "$ref": "#/$defs/vector3"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "repeatInstance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "instance_id",
+        "enabled",
+        "local_from_repeat",
+        "grid_index",
+        "sequence_index",
+        "variation_id",
+        "residual_ref",
+        "allow_reflection",
+        "confidence",
+        "attributes"
+      ],
+      "properties": {
+        "instance_id": {
+          "$ref": "#/$defs/instanceId"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "local_from_repeat": {
+          "$ref": "#/$defs/matrix4"
+        },
+        "grid_index": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/integerVector2"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sequence_index": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "variation_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "residual_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "allow_reflection": {
+          "type": "boolean"
+        },
+        "confidence": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "repeatNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/commonNodeFields"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "node_id",
+            "node_type",
+            "label",
+            "enabled",
+            "local_from_parent",
+            "local_bounds",
+            "semantic",
+            "attributes",
+            "provenance",
+            "prototype_node_id",
+            "instances",
+            "layout",
+            "nominal_count",
+            "regularity",
+            "axis",
+            "secondary_axis",
+            "nominal_spacing",
+            "secondary_spacing",
+            "missing_indices",
+            "residual_policy"
+          ],
+          "properties": {
+            "node_id": {
+              "$ref": "#/$defs/nodeId"
+            },
+            "node_type": {
+              "const": "repeat"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "local_from_parent": {
+              "$ref": "#/$defs/matrix4"
+            },
+            "local_bounds": {
+              "$ref": "#/$defs/bounds3"
+            },
+            "semantic": {
+              "$ref": "#/$defs/semantic"
+            },
+            "attributes": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "provenance": {
+              "$ref": "#/$defs/provenance"
+            },
+            "prototype_node_id": {
+              "$ref": "#/$defs/nodeId"
+            },
+            "instances": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/repeatInstance"
+              }
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "linear",
+                "grid",
+                "radial",
+                "explicit"
+              ]
+            },
+            "nominal_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "regularity": {
+              "type": "string",
+              "enum": [
+                "strict",
+                "mildly_irregular",
+                "disrupted",
+                "weak",
+                "explicit"
+              ]
+            },
+            "axis": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/vector3"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "secondary_axis": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/vector3"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "nominal_spacing": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "secondary_spacing": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "radial_center": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/vector3"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "radial_normal": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/vector3"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "nominal_angle_step_degrees": {
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "missing_indices": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "uniqueItems": true
+            },
+            "residual_policy": {
+              "type": "string",
+              "enum": [
+                "none",
+                "per_instance_reference",
+                "grouped_reference",
+                "external_binding"
+              ]
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "layout": {
+                    "const": "linear"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "axis": {
+                    "$ref": "#/$defs/vector3"
+                  },
+                  "nominal_spacing": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "layout": {
+                    "const": "grid"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "axis": {
+                    "$ref": "#/$defs/vector3"
+                  },
+                  "secondary_axis": {
+                    "$ref": "#/$defs/vector3"
+                  },
+                  "nominal_spacing": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "secondary_spacing": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "layout": {
+                    "const": "radial"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "radial_center",
+                  "radial_normal",
+                  "nominal_angle_step_degrees"
+                ],
+                "properties": {
+                  "radial_center": {
+                    "$ref": "#/$defs/vector3"
+                  },
+                  "radial_normal": {
+                    "$ref": "#/$defs/vector3"
+                  },
+                  "nominal_angle_step_degrees": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "terminalNode": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/commonNodeFields"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "node_id",
+            "node_type",
+            "label",
+            "enabled",
+            "local_from_parent",
+            "local_bounds",
+            "semantic",
+            "attributes",
+            "provenance",
+            "terminal_id",
+            "terminal_kind",
+            "canonical_instance_id",
+            "appearance_group",
+            "geometry_ref",
+            "binding_key",
+            "editable_parameters",
+            "replacement_compatibility",
+            "occlusion_role",
+            "collision_role"
+          ],
+          "properties": {
+            "node_id": {
+              "$ref": "#/$defs/nodeId"
+            },
+            "node_type": {
+              "const": "terminal"
+            },
+            "label": {
+              "type": "string",
+              "minLength": 1
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "local_from_parent": {
+              "$ref": "#/$defs/matrix4"
+            },
+            "local_bounds": {
+              "$ref": "#/$defs/bounds3"
+            },
+            "semantic": {
+              "$ref": "#/$defs/semantic"
+            },
+            "attributes": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "provenance": {
+              "$ref": "#/$defs/provenance"
+            },
+            "terminal_id": {
+              "$ref": "#/$defs/terminalId"
+            },
+            "terminal_kind": {
+              "type": "string",
+              "enum": [
+                "surface",
+                "volume",
+                "object",
+                "proxy",
+                "generic"
+              ]
+            },
+            "canonical_instance_id": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/instanceId"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "appearance_group": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "geometry_ref": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/relativePath"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "binding_key": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "editable_parameters": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "replacement_compatibility": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "uniqueItems": true
+            },
+            "occlusion_role": {
+              "type": "string",
+              "enum": [
+                "none",
+                "proxy",
+                "authoritative"
+              ]
+            },
+            "collision_role": {
+              "type": "string",
+              "enum": [
+                "none",
+                "proxy",
+                "authoritative"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "node": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/rootNode"
+        },
+        {
+          "$ref": "#/$defs/splitNode"
+        },
+        {
+          "$ref": "#/$defs/repeatNode"
+        },
+        {
+          "$ref": "#/$defs/terminalNode"
+        }
+      ]
+    },
+    "completeness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "complete",
+            "partial",
+            "empty"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "partial",
+                  "empty"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "diagnostic_id",
+        "kind",
+        "message",
+        "artifact_ref"
+      ],
+      "properties": {
+        "diagnostic_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "information",
+            "warning",
+            "failure",
+            "plane_fit",
+            "periodicity",
+            "proposal",
+            "refinement",
+            "other"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "derivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "operation_id",
+        "parameters",
+        "created_at"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "edit",
+            "refinement",
+            "migration",
+            "import",
+            "other"
+          ]
+        },
+        "operation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

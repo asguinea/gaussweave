@@ -1,0 +1,1 @@
+"""Gaussian scene representation interfaces."""

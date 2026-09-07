@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0.0",
+  "definitions_version": "definitions-v1.0",
+  "grammar_id": "grammar-fixture",
+  "scene_id": "syn-fixture",
+  "source": {"kind": "ground_truth", "method": "fixture", "confidence": 1},
+  "coordinate_system": {
+    "handedness": "right",
+    "up_axis": "+Z",
+    "world_units": "meters",
+    "transform_storage": "row_major",
+    "vector_convention": "column_vectors"
+  },
+  "root_node_id": "root-main",
+  "nodes": {
+    "root-main": {
+      "node_id": "root-main",
+      "node_type": "root",
+      "label": "Fixture root",
+      "enabled": true,
+      "local_from_parent": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+      "local_bounds": {"min": [0, 0, 0], "max": [1, 1, 1]},
+      "semantic": {"category": "scene", "subcategory": null, "tags": []},
+      "attributes": {},
+      "provenance": {"kind": "ground_truth", "method": "fixture", "confidence": 1},
+      "children": []
+    }
+  },
+  "completeness": {"status": "complete", "reason": "Minimal fixture"},
+  "diagnostics": [],
+  "parent_grammar_id": null,
+  "derivation": null,
+  "content_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+}

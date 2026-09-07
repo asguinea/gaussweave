@@ -1,0 +1,961 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gaussweave.local/schemas/experiment.schema.json",
+  "title": "GaussWeave Experiment Configuration",
+  "description": "Configuration for one GaussWeave experiment family or run matrix.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "definitions_version",
+    "experiment_id",
+    "family",
+    "mode",
+    "research_questions",
+    "dataset",
+    "execution",
+    "method",
+    "training",
+    "representation",
+    "rendering",
+    "metrics",
+    "accounting",
+    "stopping",
+    "failure_policy",
+    "outputs",
+    "freeze"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "definitions_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "experiment_id": {
+      "type": "string",
+      "pattern": "^exp-[a-z0-9][a-z0-9._-]*-v[0-9]+$"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "family": {
+      "type": "string",
+      "enum": [
+        "hardware_calibration",
+        "gs_baseline",
+        "matched_size_gs",
+        "oracle_gaussweave",
+        "detected_gaussweave",
+        "induction_accuracy",
+        "structural_editing",
+        "real_scene_validation",
+        "ablation",
+        "runtime_instancing"
+      ]
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "development",
+        "calibration",
+        "exploratory",
+        "frozen"
+      ]
+    },
+    "research_questions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "RQ1",
+          "RQ2",
+          "RQ3",
+          "RQ4",
+          "RQ5",
+          "RQ6",
+          "RQ7",
+          "RQ8",
+          "RQ9"
+        ]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "candidate_claims": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "C1",
+          "C2",
+          "C3",
+          "C4",
+          "C5",
+          "C6",
+          "C7",
+          "C8"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "dataset": {
+      "$ref": "#/$defs/dataset"
+    },
+    "execution": {
+      "$ref": "#/$defs/execution"
+    },
+    "method": {
+      "$ref": "#/$defs/method"
+    },
+    "baseline": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/baseline"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "training": {
+      "$ref": "#/$defs/training"
+    },
+    "representation": {
+      "$ref": "#/$defs/representation"
+    },
+    "rendering": {
+      "$ref": "#/$defs/rendering"
+    },
+    "metrics": {
+      "$ref": "#/$defs/metrics"
+    },
+    "accounting": {
+      "$ref": "#/$defs/accounting"
+    },
+    "stopping": {
+      "$ref": "#/$defs/stopping"
+    },
+    "failure_policy": {
+      "$ref": "#/$defs/failurePolicy"
+    },
+    "outputs": {
+      "$ref": "#/$defs/outputs"
+    },
+    "freeze": {
+      "$ref": "#/$defs/freeze"
+    },
+    "matrix": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1
+      }
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "mode": {
+            "const": "frozen"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "freeze": {
+            "properties": {
+              "status": {
+                "const": "frozen"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "family": {
+            "const": "oracle_gaussweave"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "method": {
+            "properties": {
+              "method_kind": {
+                "const": "oracle_gaussweave"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "family": {
+            "const": "detected_gaussweave"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "method": {
+            "properties": {
+              "method_kind": {
+                "const": "detected_gaussweave"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "anyOf": [
+          {
+            "pattern": "^/"
+          },
+          {
+            "pattern": "^[A-Za-z]:[\\\\/]"
+          },
+          {
+            "pattern": "(^|/)\\.\\.(/|$)"
+          }
+        ]
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset_id",
+        "scene_selection",
+        "train_split",
+        "validation_split",
+        "test_split"
+      ],
+      "properties": {
+        "dataset_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scene_selection": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "scene_ids"
+              ],
+              "properties": {
+                "scene_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true,
+                  "minItems": 1
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "subset"
+              ],
+              "properties": {
+                "subset": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          ]
+        },
+        "train_split": {
+          "type": "string",
+          "const": "train"
+        },
+        "validation_split": {
+          "type": "string",
+          "const": "validation"
+        },
+        "test_split": {
+          "type": "string",
+          "const": "test"
+        },
+        "manifest_path": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_profile",
+        "seeds",
+        "attempt",
+        "environment_requirements"
+      ],
+      "properties": {
+        "resource_profile": {
+          "type": "string",
+          "enum": [
+            "smoke",
+            "quick",
+            "standard",
+            "extended"
+          ]
+        },
+        "seeds": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "environment_requirements": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "wsl_required",
+            "cuda_required",
+            "gpu_required"
+          ],
+          "properties": {
+            "wsl_required": {
+              "type": "boolean"
+            },
+            "cuda_required": {
+              "type": "boolean"
+            },
+            "gpu_required": {
+              "type": "boolean"
+            },
+            "minimum_vram_bytes": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        }
+      }
+    },
+    "method": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method_id",
+        "method_kind",
+        "version",
+        "operating_point"
+      ],
+      "properties": {
+        "method_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method_kind": {
+          "type": "string",
+          "enum": [
+            "full_gs",
+            "compressed_gs",
+            "oracle_gaussweave",
+            "detected_gaussweave",
+            "gs_edit_control",
+            "runtime_gaussweave",
+            "other"
+          ]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "operating_point": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "privileged_information": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "none",
+              "oracle_terminal_bounds",
+              "oracle_instance_ids",
+              "oracle_membership",
+              "ground_truth_grammar",
+              "edited_geometry",
+              "manual_annotations"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baseline_id",
+        "baseline_kind",
+        "matching_policy",
+        "compute_policy"
+      ],
+      "properties": {
+        "baseline_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "baseline_kind": {
+          "type": "string",
+          "enum": [
+            "full_gs",
+            "importance_pruning",
+            "opacity_pruning",
+            "quantization",
+            "reduced_sh_degree",
+            "gs_edit_control",
+            "no_op",
+            "other"
+          ]
+        },
+        "matching_policy": {
+          "type": "string",
+          "enum": [
+            "none",
+            "fixed_retained_fraction",
+            "fixed_target_bytes",
+            "nearest_gaussweave_bytes",
+            "validation_quality_target"
+          ]
+        },
+        "matching_tolerance": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "compute_policy": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "training": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "config_ref",
+        "checkpoint_selection",
+        "test_data_forbidden"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "config_ref": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/relativePath"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "checkpoint_selection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "policy",
+            "metric",
+            "direction",
+            "iteration"
+          ],
+          "properties": {
+            "policy": {
+              "type": "string",
+              "enum": [
+                "final_iteration",
+                "best_validation_metric",
+                "explicit_iteration",
+                "earliest_validation_equivalent"
+              ]
+            },
+            "metric": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "direction": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "minimize",
+                "maximize",
+                null
+              ]
+            },
+            "iteration": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0
+            }
+          }
+        },
+        "test_data_forbidden": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "representation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grammar_source",
+        "canonical_selection",
+        "membership_policy",
+        "clipping_policy",
+        "appearance_policy",
+        "residual_policy",
+        "instancing_implementation"
+      ],
+      "properties": {
+        "grammar_source": {
+          "type": "string",
+          "enum": [
+            "none",
+            "ground_truth",
+            "oracle",
+            "detected",
+            "manual",
+            "imported"
+          ]
+        },
+        "canonical_selection": {
+          "type": "string",
+          "enum": [
+            "none",
+            "source_instance",
+            "medoid_instance",
+            "optimized_canonical",
+            "synthetic_ground_truth"
+          ]
+        },
+        "membership_policy": {
+          "type": "string",
+          "enum": [
+            "none",
+            "center_inside",
+            "ellipsoid_overlap",
+            "mask_projected",
+            "explicit_annotation",
+            "hybrid"
+          ]
+        },
+        "clipping_policy": {
+          "type": "string",
+          "enum": [
+            "none",
+            "mean_inside",
+            "covariance_support",
+            "source_instance_mask",
+            "explicit_membership"
+          ]
+        },
+        "appearance_policy": {
+          "type": "string",
+          "enum": [
+            "unchanged",
+            "world_locked",
+            "local_rotated",
+            "view_independent_only"
+          ]
+        },
+        "residual_policy": {
+          "type": "string",
+          "enum": [
+            "none",
+            "per_instance_reference",
+            "grouped_reference",
+            "external_binding"
+          ]
+        },
+        "instancing_implementation": {
+          "type": "string",
+          "enum": [
+            "none",
+            "materialized_cpu",
+            "materialized_gpu",
+            "native_non_materialized",
+            "other"
+          ]
+        }
+      }
+    },
+    "rendering": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "width",
+        "height",
+        "camera_batch_size",
+        "outputs",
+        "warmup_frames",
+        "measured_repetitions"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "camera_batch_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "rgb",
+              "alpha",
+              "depth",
+              "normals",
+              "ids",
+              "mask"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "warmup_frames": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "measured_repetitions": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metric_ids",
+        "aggregation_unit"
+      ],
+      "properties": {
+        "metric_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "aggregation_unit": {
+          "type": "string",
+          "const": "scene"
+        },
+        "qualitative_selection_policy": {
+          "type": "string",
+          "enum": [
+            "fixed_camera_ids",
+            "median_scene",
+            "best_scene",
+            "worst_scene",
+            "stratified",
+            "failure_case",
+            "random_fixed_seed",
+            "manual_labeled"
+          ]
+        }
+      }
+    },
+    "accounting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "storage_required",
+        "gpu_memory_required",
+        "cpu_memory_required",
+        "runtime_required"
+      ],
+      "properties": {
+        "storage_required": {
+          "type": "boolean"
+        },
+        "gpu_memory_required": {
+          "type": "boolean"
+        },
+        "cpu_memory_required": {
+          "type": "boolean"
+        },
+        "runtime_required": {
+          "type": "boolean"
+        },
+        "include_temporary_workspace": {
+          "type": "boolean"
+        }
+      }
+    },
+    "stopping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rules"
+      ],
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "value"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "iteration_count",
+                  "gaussian_cap",
+                  "validation_plateau",
+                  "time_budget_seconds",
+                  "memory_guard",
+                  "no_valid_proposal",
+                  "numerical_failure"
+                ]
+              },
+              "value": {}
+            }
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "failurePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preserve_failed_runs",
+        "silent_parameter_change_forbidden",
+        "retry_policy",
+        "allowed_exclusion_reasons"
+      ],
+      "properties": {
+        "preserve_failed_runs": {
+          "type": "boolean",
+          "const": true
+        },
+        "silent_parameter_change_forbidden": {
+          "type": "boolean",
+          "const": true
+        },
+        "retry_policy": {
+          "type": "string",
+          "enum": [
+            "new_attempt_same_config",
+            "new_run_on_config_change"
+          ]
+        },
+        "allowed_exclusion_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "corrupted_dataset",
+              "generator_defect",
+              "invalid_camera_calibration",
+              "confirmed_implementation_defect",
+              "unrecoverable_hardware_interruption",
+              "metric_input_corruption"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_root",
+        "save_resolved_config",
+        "save_logs",
+        "save_renders",
+        "save_metrics",
+        "save_accounting",
+        "save_failures"
+      ],
+      "properties": {
+        "run_root": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "save_resolved_config": {
+          "type": "boolean",
+          "const": true
+        },
+        "save_logs": {
+          "type": "boolean"
+        },
+        "save_renders": {
+          "type": "boolean"
+        },
+        "save_metrics": {
+          "type": "boolean"
+        },
+        "save_accounting": {
+          "type": "boolean"
+        },
+        "save_failures": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    },
+    "freeze": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "frozen_at",
+        "code_commit",
+        "environment_lock_digest",
+        "scene_list_digest",
+        "configuration_digest"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "unfrozen",
+            "frozen",
+            "superseded"
+          ]
+        },
+        "frozen_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "code_commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "environment_lock_digest": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "scene_list_digest": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "configuration_digest": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "frozen"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "frozen_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "code_commit": {
+                "type": "string",
+                "minLength": 1
+              },
+              "environment_lock_digest": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scene_list_digest": {
+                "type": "string",
+                "minLength": 1
+              },
+              "configuration_digest": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

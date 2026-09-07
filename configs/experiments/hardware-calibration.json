@@ -1,0 +1,91 @@
+{
+  "calibration_version": "1.0",
+  "experiment_id": "exp-hardware-calibration-v1",
+  "base_experiment_config": "configs/experiments/smoke.json",
+  "seed": 17,
+  "workload_policy": {
+    "fixture_id": "tiny-gs-v1",
+    "representative_of_full_workloads": false,
+    "camera_count": 4,
+    "train_camera_count": 2,
+    "validation_camera_count": 1,
+    "test_camera_count": 1,
+    "output_buffers": [
+      "rgb",
+      "alpha",
+      "depth"
+    ],
+    "resource_profile": "standard",
+    "warmup": "native kernels compile before measured training",
+    "timing": "steady-clock GPU-synchronized operation timing",
+    "expected_workspace_bytes_per_repetition": 1073741824,
+    "resume_policy": "no resume; every repetition uses a fresh immutable root"
+  },
+  "candidates": [
+    {
+      "candidate_id": "cal-conservative",
+      "width": 48,
+      "height": 48,
+      "iterations": 8,
+      "initial_gaussian_count": 3,
+      "maximum_gaussian_count": 3,
+      "camera_batch_size": 1,
+      "precision": "float32",
+      "repetitions": 1,
+      "mode": "real",
+      "expected_workspace_bytes": 1073741824
+    },
+    {
+      "candidate_id": "cal-balanced",
+      "width": 64,
+      "height": 64,
+      "iterations": 20,
+      "initial_gaussian_count": 8,
+      "maximum_gaussian_count": 8,
+      "camera_batch_size": 1,
+      "precision": "float32",
+      "repetitions": 2,
+      "mode": "real",
+      "expected_workspace_bytes": 1073741824
+    },
+    {
+      "candidate_id": "cal-standard",
+      "width": 96,
+      "height": 96,
+      "iterations": 40,
+      "initial_gaussian_count": 16,
+      "maximum_gaussian_count": 16,
+      "camera_batch_size": 2,
+      "precision": "float32",
+      "repetitions": 2,
+      "mode": "real",
+      "expected_workspace_bytes": 1073741824
+    },
+    {
+      "candidate_id": "cal-demanding",
+      "width": 128,
+      "height": 128,
+      "iterations": 60,
+      "initial_gaussian_count": 32,
+      "maximum_gaussian_count": 32,
+      "camera_batch_size": 2,
+      "precision": "float32",
+      "repetitions": 1,
+      "mode": "real",
+      "expected_workspace_bytes": 1073741824
+    },
+    {
+      "candidate_id": "cal-artificial-guard",
+      "width": 48,
+      "height": 48,
+      "iterations": 8,
+      "initial_gaussian_count": 3,
+      "maximum_gaussian_count": 3,
+      "camera_batch_size": 1,
+      "precision": "float32",
+      "repetitions": 1,
+      "mode": "artificial_guard",
+      "expected_workspace_bytes": 1073741824
+    }
+  ]
+}

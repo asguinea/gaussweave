@@ -1,0 +1,51 @@
+{
+  "profile_version": "1.0",
+  "profile_id": "g14-standard",
+  "status": "reference hardware qualification profile",
+  "specializes": "standard",
+  "qualification_evidence": "environment/wsl-qualification.json",
+  "limitations": [
+    "timings should be requalified for each representative scene and machine"
+  ],
+  "environment_assumptions": {
+    "host": "ASUS ROG Zephyrus G14",
+    "repository_filesystem": "wsl_linux",
+    "wsl_distribution": "Ubuntu 24.04 on WSL 2",
+    "minimum_wsl_visible_ram_bytes": 15032385536,
+    "minimum_swap_bytes": 4294967296,
+    "ac_power_required_for_reference_timing": true
+  },
+  "workload": {
+    "candidate_id": "cal-standard",
+    "width": 96,
+    "height": 96,
+    "long_side": 96,
+    "iterations": 40,
+    "initial_gaussian_count": 16,
+    "maximum_gaussian_count": 16,
+    "camera_batch_size": 2,
+    "precision": "float32",
+    "output_buffers": [
+      "rgb",
+      "alpha",
+      "depth"
+    ]
+  },
+  "resource_profile": {
+    "name": "standard",
+    "gpu_peak_allocated_limit_bytes": 4294967296,
+    "gpu_peak_reserved_limit_bytes": 5368709120,
+    "cpu_rss_limit_bytes": 10737418240,
+    "disk_safety_reserve_bytes": 107374182400,
+    "expected_workspace_bytes": 2147483648,
+    "warning_fraction": 0.8,
+    "hard_failure_fraction": 1.0
+  },
+  "timing_policy": {
+    "warmup": "compile native kernels before measured training",
+    "repetitions": 2,
+    "fresh_root_per_repetition": true,
+    "gpu_synchronization": true,
+    "reference_filesystem": "wsl_linux_ext4"
+  }
+}

@@ -1,0 +1,130 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gaussweave"
+version = "0.1.0"
+description = "Reproducible tooling for structured 3D Gaussian scene experiments."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Alejandro Sanchez Guinea" }]
+keywords = [
+    "3d-gaussian-splatting",
+    "computer-graphics",
+    "reproducibility",
+    "scene-representation",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Graphics :: 3D Modeling",
+    "Typing :: Typed",
+]
+dependencies = [
+    "jsonschema>=4.25,<5",
+    "pillow>=12.3,<13",
+]
+
+[project.urls]
+Homepage = "https://github.com/asguinea/gaussweave"
+Documentation = "https://github.com/asguinea/gaussweave#readme"
+Issues = "https://github.com/asguinea/gaussweave/issues"
+Source = "https://github.com/asguinea/gaussweave"
+
+[project.scripts]
+gaussweave = "gaussweave.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.15,<2",
+    "pytest>=8,<10",
+    "pytest-cov>=6,<8",
+    "ruff>=0.12,<0.17",
+    "types-jsonschema>=4.25,<5",
+]
+gpu = [
+    "gsplat==1.5.3",
+    "torch==2.11.0",
+]
+
+[tool.uv]
+required-version = ">=0.11,<0.12"
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu130" }
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+gaussweave = ["py.typed", "schemas/*.json"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers --basetemp=.pytest-temp -ra -m 'not gpu and not slow and not blender'"
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "unit: fast, isolated unit tests",
+    "property: bounded property-based tests",
+    "schema: machine-readable schema contract tests",
+    "semantic: semantic validation tests",
+    "serialization: serialization and round-trip tests",
+    "integration: interactions between repository subsystems",
+    "gpu: tests requiring a GPU or CUDA",
+    "slow: tests excluded from the default fast suite",
+    "regression: tests preserving behavior after a defect fix",
+    "resource: resource-limit and accounting tests",
+    "cli: command-line interface tests",
+    "e2e: end-to-end workflow tests",
+    "wsl: tests requiring or validating WSL behavior",
+    "blender: tests requiring Blender",
+    "colmap: tests requiring COLMAP or PyCOLMAP",
+    "native: tests requiring a project native extension",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["gaussweave"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+extend-exclude = [
+    "artifacts",
+    "checkpoints",
+    "datasets",
+    "runs",
+    "results",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_ignores = false
+files = ["src/gaussweave"]
+exclude = ["^build/", "^dist/"]
+
+[[tool.mypy.overrides]]
+module = ["bpy", "bpy.*", "gsplat", "gsplat.*", "mathutils", "torch", "torch.*"]
+ignore_missing_imports = true
