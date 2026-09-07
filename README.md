@@ -58,7 +58,7 @@ uv build
 
 ## GPU environment
 
-The locked GPU extra uses PyTorch 2.11.0 with CUDA 13.0 and gsplat 1.5.3:
+The locked GPU extra uses PyTorch 2.13.0 with CUDA 13.0 and gsplat 1.5.3:
 
 ```bash
 export CUDA_HOME=/usr/local/cuda-13.0
